@@ -2,24 +2,24 @@
 
 **** STEP 1: Merging HFH, MI, AF for CV hospitalization file 
 clear all
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\diabetes_hf_final_glp1_dpp4.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\diabetes_hfief_final_glp1_dpp4.dta"
 gen year= year(dof)
 drop if bmi < 30
 drop dod
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\diabetes_hf_dpp4glp1_glp1_hf_discharge.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\diabetes_hfief_dpp4glp1_glp1_hf_admission.dta"
 drop if _merge==2
 drop _merge
 rename admission admission_hf
-merge m:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_dpp4_mi_revasc.dta"
+merge m:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_dpp4_mi_revasc.dta"
 drop if _merge==2
 drop _merge
-merge m:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_dpp4_af_after.dta"
+merge m:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_dpp4_af_after.dta"
 drop if _merge ==2
 drop _merge
 
 
 **** STEP 2:  Merging with death information file 
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\dpp4\diabetes_hf_dpp4glp1_dod_final.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\diabetes_hfief_dpp4_glp1_dod_final.dta"
 drop if _merge ==2
 drop _merge
 
@@ -75,7 +75,7 @@ pbalchk treatment age bmi2  sex AF copd depression alcohol hypertension CAD MI c
 
 *** STEP 4: gen outcome date variable (composite of HFH or mortality; whichever comes first)
 gen follow_up =.
-replace follow_up= mdy(06,30,2022)
+replace follow_up= mdy(1,1,2023)
 
 
 ** final date of follow up June 30, 2022
@@ -86,16 +86,16 @@ replace failure = 1 if failure ==.
 
 
 *** STEP 5: Merging with file with entire age and dof information 
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\final_age_dof.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\final_age_dof.dta"
 keep if _merge ==3
 drop _merge
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\final_survival_analysis_data_cv_hospitalization.dta", replace
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\final_survival_analysis_data_cv_hospitalization.dta", replace
 
 
 *** STEP 6: Survival analyses 
 clear all
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\final_survival_analysis_data_cv_hospitalization.dta",
-stset outcome, id(scrssn) origin(dof) failure(failure==1) exit(failure ==1 time td(30jun2022)) scale(365.25)
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\final_survival_analysis_data_cv_hospitalization.dta",
+stset outcome, id(scrssn) origin(dof) failure(failure==1) exit(failure ==1 time td(1January2023)) scale(365.25)
 stcox treatment agegp obesity sex AF copd depression alcohol hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke creatinine hba1c ACE BB antiarr insulin LD metformin spiro TZD statin HFH THFH year weight2
 stcox treatment agegp obesity sex AF copd depression alcohol hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke creatinine hba1c ACE BB antiarr insulin LD metformin spiro TZD statin HFH THFH year
 

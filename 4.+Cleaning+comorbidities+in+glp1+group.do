@@ -3,312 +3,302 @@
 *** STEP 1: Identifying patients with AF
 *** Cleaning AF 
 clear
-cd "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1"
-use diabetes_hf_glp1_af
+cd "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\hfief GLP1"
+use diabetes_hfief_glp1_af
 rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_af.dta", replace
-*** 430 patients with AF
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_af.dta", replace
+*** 683 patients with AF
 
 *** Cleaning patients with ablation for AF
 clear
-use diabetes_hf_glp1_ablation
+use diabetes_hfief_glp1_ablation
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_ablation.dta", replace
-*** 4 patients with AF ablation 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_ablation.dta", replace
+*** 10 patients with AF ablation 
 
 *** Merging AF diagnosis codes with ablation 
 clear 
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_ablation.dta"
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_af.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_ablation.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_af.dta"
 duplicates drop scrssn, force
 keep scrssn
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_final_af.dta", replace
-*** 431 patients with AF including procedure and diagnosis codes 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_final_af.dta", replace
+*** 683 patients with AF including procedure and diagnosis codes 
 
 *** Cleaning patients with cardioversion 
 clear 
-use diabetes_hf_glp1_cardioversion
+use diabetes_hfief_glp1_cv
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn 
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_final_af.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_final_af.dta"
 duplicates drop scrssn, force
 keep scrssn
 gen AF=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_final_af_1.dta", replace
-*** 432 patients with AF including procedure and diagnosis codes 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_final_af_1.dta", replace
+*** 689 patients with AF including procedure and diagnosis codes 
 
 *************************************************************************************************************************
 
 *** STEP 2: Identifying patients with COPD
 clear
-use diabetes_hf_glp1_copd
+use diabetes_hfief_glp1_copd
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen copd=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_copd.dta", replace
-*** 604 patients with COPD
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_copd.dta", replace
+*** 680 patients with COPD
 
 *************************************************************************************************************************
 
 *** STEP 3: Identifying patients with depression 
 clear
-use diabetes_hf_glp1_depression
+use diabetes_hfief_glp1_depression
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen depression=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_depression.dta", replace
-*** 485 patients with depression 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_depression.dta", replace
+*** 631 patients with depression 
 
 *************************************************************************************************************************
 
 *** STEP 4: Identifying patients with ESRD
 clear
-use diabetes_hf_glp1_esrd
+use diabetes_hfief_glp1_esrd
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen esrd=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_esrd.dta", replace
-*** 19 patients with ESRD  
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_esrd.dta", replace
+*** 28 patients with ESRD  
 
 *************************************************************************************************************************
 
 *** STEP 5: Identifying patients with alcohol abuse
 clear
-use diabetes_hf_glp1_alcoholabuse
+use diabetes_hfief_glp1_alcoholabuse
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen alcohol=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_alcoholabuse.dta", replace
-*** 20 patients with alcohol abuse  
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_alcoholabuse.dta", replace
+*** 28 patients with alcohol abuse  
 
 *************************************************************************************************************************
 
 *** STEP 6: Identifying patients with hypothyroidism 
 clear
-use diabetes_hf_glp1_hypothyroidism
+use diabetes_hfief_glp1_hypothyroid
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen hypothyroidism=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_hypothyroidism.dta", replace
-*** 195 patients with hypothyroidism
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_hypothyroidism.dta", replace
+*** 232 patients with hypothyroidism
 
 *************************************************************************************************************************
 
 *** STEP 7: Identifying patients with hypertension
 clear
-use diabetes_hf_glp1_hypertension
+use diabetes_hfief_glp1_hypertension
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen hypertension=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_hypertension.dta", replace
-*** 603 patients with hypertension
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_hypertension.dta", replace
+*** 977 patients with hypertension
 
 *************************************************************************************************************************
 
 *** STEP 8: Identifying patients with CAD
 clear
-use diabetes_hf_glp1_cad
+use diabetes_hfief_glp1_cad
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen CAD= 1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_cad.dta", replace
-*** 772 patients with stable CAD 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_cad.dta", replace
+*** 1164 patients with stable CAD 
 
 *************************************************************************************************************************
 *** STEP 9: Identifying patients with prior MI
 clear
-use diabetes_hf_glp1_mi
+use diabetes_hfief_glp1_mi
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen MI=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_mi.dta", replace
-*** 209 patients with MI
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_mi.dta", replace
+*** 486 patients with MI
 
 *************************************************************************************************************************
 *** STEP 10: Identifying patients with CKD 
 clear
-use diabetes_hf_glp1_kidneydisease
+use diabetes_hfief_glp1_kd
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen ckd=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_kidneydisease.dta", replace
-*** 702 patients with ckd
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_kidneydisease.dta", replace
+*** 902 patients with ckd
 
 *************************************************************************************************************************
 *** STEP 11: Identifying patients with liver disease 
 clear
-use diabetes_hf_glp1_liverdisease
+use diabetes_hfief_glp1_liverdisease
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen cld=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_liverdisease.dta", replace
-*** 136 patients with cld
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_liverdisease.dta", replace
+*** 173 patients with cld
 
 *************************************************************************************************************************
 *** STEP 12: Identifying patients with malignancy
 clear
-use diabetes_hf_glp1_malignancy
+use diabetes_hfief_glp1_malignancy
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen cancer=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_malignancy.dta", replace
-*** 4 patients with malignancy
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_malignancy.dta", replace
+*** 6 patients with malignancy
 
 
 *************************************************************************************************************************
 *** STEP 14: Identifying patients with pad
 clear
-use diabetes_hf_glp1_pad
+use diabetes_hfief_glp1_pad
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen pad=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_pad.dta", replace
-*** 172 patients with pad
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_pad.dta", replace
+*** 322 patients with pad
 
 
 *************************************************************************************************************************
 *** STEP 15: Identifying patients with polysubstance abuse
 clear
-use diabetes_hf_glp1_polyabuse
+use diabetes_hfief_glp1_polyabuse
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen polyabuse=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_polyabuse.dta", replace
-***49 patients with polysubstance abuse
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_polyabuse.dta", replace
+***96 patients with polysubstance abuse
 
 *************************************************************************************************************************
 *** STEP 16: Identifying patients with prior pacemaker 
 clear
-use diabetes_hf_glp1_priorpmdc
+use diabetes_hfief_glp1_priorpmdc
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen ppm=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_priorpmdc.dta", replace
-*** 74 patients with pacemaker 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_priorpmdc.dta", replace
+*** 270 patients with pacemaker 
 
 *************************************************************************************************************************
 *** STEP 17: Identifying patients with schizophrenia 
 clear
-use diabetes_hf_glp1_schizodisorder
+use diabetes_hfief_glp1_schizo
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen schizo=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_schizodisorder.dta", replace
-*** 23 patients with szchiphrenia 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_schizodisorder.dta", replace
+*** 24 patients with szchiphrenia 
 
 
 *************************************************************************************************************************
 *** STEP 18: Identifying patients with stroke 
 clear
-use diabetes_hf_glp1_stroke
+use diabetes_hfief_glp1_stroke
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen stroke=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_stroke.dta", replace
-*** 39 patients with stroke
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_stroke.dta", replace
+*** 57 patients with stroke
 
 *************************************************************************************************************************
-
-*** STEP 19: Identifying patients with pneumonia
+*** STEP 20: Identifying patients with CRT
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\hfpef_glp1_pneumonia.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\hfief GLP1\diabetes_hfief_glp1_crtnf.dta" 
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
-gen pneumonia=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\hfpef_glp1_pneumonia.dta", replace
-*** 56 patients with pneumonia
-
-*************************************************************************************************************************
-
-*** STEP 20: Identifying patients with copd excerbation
-clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\hfpef_glp1_copdexacerbation.dta"
+merge 1:m scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\hfief GLP1\diabetes_hfief_glp1_lvpnf.dta" 
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
-gen copdexa=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\hfpef_glp1_copdexacerbation.dta", replace
-*** 33 patients with copd excerbation
+gen CRT=1
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfief_glp1_crt.dta", replace
+*** 152 patients with CRT
+
 
 *************************************************************************************************************************
 
-*** STEP 21: Identifying patients with cholecystitis/cholecystectomy 
+*** STEP 21: Identifying patients with ICD
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\hfpef_glp1_cholecyst.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\hfief GLP1\diabetes_hfief_glp1_icdnf.dta" 
+rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
-gen cholecyst=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\hfpef_glp1_cholecyst.dta", replace
-*** 15 patients with cholecystitis/cholecystectomy
+gen ICD=1
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfief_glp1_icd.dta", replace
+*** 176 patients with ICD
 
 *************************************************************************************************************************
 *** STEP 22: Merging all comorbidities 
 
 clear 
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_final_af_1.dta"
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_copd.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_final_af_1.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_copd.dta"
 drop _merge 
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_depression.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_depression.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_esrd.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_esrd.dta"
 drop _merge 
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_alcoholabuse.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_alcoholabuse.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_hypothyroidism.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_hypothyroidism.dta"
 drop _merge 
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_hypertension.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_hypertension.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_cad.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_cad.dta"
 drop _merge 
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_mi.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_mi.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_kidneydisease.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_kidneydisease.dta"
 drop _merge 
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_liverdisease.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_liverdisease.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_malignancy.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_malignancy.dta"
 drop _merge 
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_pad.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_pad.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_polyabuse.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_polyabuse.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_priorpmdc.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_priorpmdc.dta"
 drop _merge 
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_schizodisorder.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_schizodisorder.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_stroke.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_stroke.dta"
 drop _merge 
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\hfpef_glp1_pneumonia.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfief_glp1_crt.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\hfpef_glp1_copdexacerbation.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfief_glp1_icd.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\hfpef_glp1_cholecyst.dta"
-drop _merge
-
 replace AF=0 if AF==.
 replace copd = 0 if copd==.
 replace depression = 0 if depression==.
@@ -326,11 +316,10 @@ replace polyabuse = 0 if polyabuse ==.
 replace ppm = 0 if ppm ==.
 replace schizo = 0 if schizo ==.
 replace stroke = 0 if stroke ==.
-replace pneumonia = 0 if pneumonia ==.
-replace copdexa = 0 if copdexa ==.
-replace cholecyst = 0 if cholecyst ==.
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_final_comorbidities_merged.dta", replace 
-*** 1128 patients 
+replace ICD =1 if ICD ==.
+replace CRT=1 if CRT==.
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_final_comorbidities_merged.dta", replace 
+*** 1410 patients 
 
 
 

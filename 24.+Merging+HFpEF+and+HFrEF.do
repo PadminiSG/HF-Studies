@@ -106,7 +106,7 @@ stset outcome, id(scrssn) origin(dof) failure(failure==1) exit(failure ==1 time 
 
 stcox treatment agegp obesity sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr sglt2 insulin LD metformin spiro statin  year weight2
 
-stcox treatment agegp obesity sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr sglt2 insulin LD metformin spiro statin year 
+stcox treatment agegp obesity sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr sglt2 insulin LD metformin spiro statin  year 
 
 stcox treatment weight2 
 
@@ -114,33 +114,6 @@ sts graph, by(treatment)
 
 sts graph, by(treatment) adjustfor(bmi agegp sex AF ckd cld copd HFH THFH CAD MI ACE BB antiarr insulin LD metformin spiro HFH THFH)
 
-*Mortality rates:
-gen death=0 if dod==.
-recode death .=1
-gen outcome3=min(dod, follow_up)
-stset outcome3, id(scrssn) origin(dof) failure(death==1) exit(death==1 time td(30July2025)) scale(365.25)
-strate, per(100)
-strate treatment, per(100)
-
-
-**** STEP 8: Competing risk analyses
-clear all
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\final_survival_analysis_data.dta",
-drop follow_up2 outcome
-gen follow_up2 =.
-*replace follow_up2= mdy(07,31,2025)
-replace follow_up2=mdy(01,01,2023)
-replace admission=. if admission>=follow_up2
-replace dod=. if dod>=follow_up2
-gen event = 0 if follow_up2~=.
-replace event = 2 if dod ~=.
-replace event = 1 if admission ~=. 
-gen outcome = min(admission, dod,follow_up2)
-gen time = outcome-dof
-stset outcome, id(scrssn) origin(dof) failure(event==1) scale(365.25)
-stcrreg treatment agegp obesity sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr sglt2 insulin LD metformin spiro statin year,compete(event==2)
-* Subdistribution HR 1.09 p =0.372 95% 0.89-1.34 Number of HFH 617
-*for f/u of 1/1/2023: SHR 1.11, p = 0.37, 95% CI (0.88-1.40), Number of HFH = 464
 
 
 
