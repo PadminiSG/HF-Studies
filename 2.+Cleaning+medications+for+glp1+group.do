@@ -2,73 +2,73 @@
 
 *** STEP 1: Identifying patients on ACEI and or ARB
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_ace.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\diabetes_hf_glp1_ace.dta"
 rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_ace.dta", replace
-*** 381 patients on ACEI
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_ace.dta", replace
+*** 216 patients on ACEI
 
 *** ARB
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_arb.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\diabetes_hf_glp1_arb.dta"
 rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hfref_glp1_arb.dta", replace
-*** 397 patients on ARB
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_arb.dta", replace
+*** 207 patients on ARB
 
 *** Merging ACEI and ARB
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_ace.dta",
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_ace.dta",
 unique scrssn
 drop _merge
 duplicates drop scrssn, force
 keep scrssn 
 gen ACE=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_ace_arb.dta", replace
-*** 775 patients on ACEI or ARB
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_ace_arb.dta", replace
+*** 422 patients on ACEI or ARB
 ***********************************************************************************************************************************
 
 *** STEP 2: Identifying patients on Betablockers
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_bb.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\diabetes_hf_glp1_bb.dta"
 rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 drop scrssn_n
 keep scrssn
 gen BB=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_bb.dta", replace
-*** 973 patients on BB
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_bb.dta", replace
+*** 491 patients on BB
 
 ***********************************************************************************************************************************
 
 *** STEP 3: Identifying patients on Antiarryhtmics
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_antiarr.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\diabetes_hf_glp1_antiarr.dta"
 rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen antiarr=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_antiarr.dta", replace
-*** 100 patients 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_antiarr.dta", replace
+*** 43 patients 
 
 
 ***********************************************************************************************************************************
 
 *** STEP 4: Identifying patients on SGLT2 analogs
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_sglt2.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\diabetes_hf_glp1_sglt2.dta"
 rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
-gen sglt2=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_sglt2.dta", replace
-*** 157 patients 
+gen SGLT2=1
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_sglt2.dta", replace
+*** 85 patients 
 
 
 
@@ -76,69 +76,69 @@ save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\
 
 *** STEP 5: Identifying patients on insulin
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_insulin.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\diabetes_hf_glp1_insulin.dta"
 rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen insulin=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_insulin.dta", replace
-*** 855 patients 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_insulin.dta", replace
+*** 703 patients 
 
 
 ***********************************************************************************************************************************
 
 *** STEP 6: Identifying patients on loop diuretic
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_loopdiuretic.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\diabetes_hf_glp1_loopdiuretic.dta"
 rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen LD=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_loopdiuretic.dta", replace
-***1281 patients 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_loopdiuretic.dta", replace
+***1018 patients 
 
 ***********************************************************************************************************************************
 
 *** STEP 7: Identifying patients on metformin
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_metformin.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\diabetes_hf_glp1_metformin.dta"
 rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen metformin=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_metformin.dta", replace
-***270 patients 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_metformin.dta", replace
+***227 patients 
 
 
 ***********************************************************************************************************************************
 
 *** STEP 8: Identifying patients on MRA
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_spiroep.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\diabetes_hf_glp1_spiroep.dta"
 rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen spiro=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_spiroep.dta", replace
-***320 patients 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_spiroep.dta", replace
+***115 patients 
 
 
 ***********************************************************************************************************************************
 
 *** STEP 9: Identifying patients on TZD
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_thiazol.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\diabetes_hf_glp1_thiazol.dta"
 rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen TZD=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_thiazol.dta", replace
-*** 7 patients 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_thiazol.dta", replace
+*** 5 patients 
 
 
 
@@ -146,141 +146,68 @@ save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\
 
 *** STEP 10: Identifying patients on statins
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_statin.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\diabetes_hf_glp1_statin.dta"
 rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen statin=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_statin.dta", replace
-*** 1233 patients 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_statin.dta", replace
+*** 968 patients 
 
 ***********************************************************************************************************************************
 
 
 *** STEP 11: Identifying patients on aspirin
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_aspirin.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1\diabetes_hf_glp1_aspirin.dta"
 rename ScrSSN scrssn
 by scrssn, sort: gen scrssn_n = _n
 keep if scrssn_n==1
 keep scrssn
 gen aspirin=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_aspirin.dta", replace
-***245 patients 
-
-***********************************************************************************************************************************
-*** STEP 13: Identifying patients on baseline ARNI 
-clear 
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_sacuval.dta"
-rename ScrSSN scrssn
-by scrssn, sort: gen scrssn_n = _n
-keep if scrssn_n==1
-keep scrssn
-gen ARNI=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_arni.dta", replace
-*** 60 patients on ARNI at baseline 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_aspirin.dta", replace
+***196 patients 
 
 ***********************************************************************************************************************************
 
-*** STEP 14: Identifying patients on ARNI at follow up
-clear 
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\diabetes_hfref_glp1_sacuafter.dta"
-rename ScrSSN scrssn
-by scrssn, sort: gen scrssn_n = _n
-keep if scrssn_n==1
-keep scrssn
-gen ARNIfu=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_arnifu.dta", replace
-*** 217 patients on ARNI at follow up
-
-***********************************************************************************************************************************
-
-*** STEP 15: Merging ARNI at baseline and follow up
-clear 
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_arni.dta"
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_arnifu.dta"
-keep scrssn 
-gen ARNIfull=1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_arnicomplete.dta", replace
-*** 225 patinets on ARNI at baseline and follow up 
-
-***********************************************************************************************************************************
-*** STEP 16: Identifying SGLT at follow up 
-clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFrEF GLP1\hfref_glp1sglt2.dta", clear
-by scrssn, sort: gen scrssn_n = _n
-keep if scrssn_n==1
-keep scrssn
-gen sglt2fu= 1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_sglt2fu.dta", replace
-*** 444 patients initiated on SGLT-2 in follow up 
-
-***********************************************************************************************************************************
-*** STEP 17: Merging SGL2i at baseline and follow up
-clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_sglt2fu.dta"
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_sglt2.dta"
-by scrssn, sort: gen scrssn_n = _n
-keep if scrssn_n==1
-keep scrssn
-gen sglt2full= 1
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_sglt2complete.dta", replace
-*** 488 patients initiated on SGLT-2 at baseline and follow up 
-
-
-*** STEP 18: Merging all medications 
+*** STEP 12: Merging all medications 
 
 clear
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_ace_arb.dta"
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_bb.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_ace_arb.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_bb.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_antiarr.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_antiarr.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_sglt2.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_sglt2.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_insulin.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_insulin.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_loopdiuretic.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_loopdiuretic.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_metformin.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_metformin.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_spiroep.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_spiroep.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_thiazol.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_thiazol.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_statin.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_statin.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_aspirin.dta"
-drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_arni.dta"
-drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_arnicomplete.dta"
-drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_arnifu.dta"
-drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_sglt2fu.dta"
-drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_sglt2complete.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_aspirin.dta"
 drop _merge
 replace ACE =0 if ACE==.
 replace BB =0 if BB==.
-replace antiarr =0 if antiarr==.
-replace insulin=0 if insulin==.
+replace antiarr =2 if antiarr==.
+replace SGLT2 =0 if SGLT2==.
+replace insulin=2 if insulin==.
 replace LD=0 if LD==.
 replace metformin=0 if metformin==.
 replace spiro=0 if spiro==.
 replace TZD=0 if TZD==.
 replace statin=0 if statin==.
 replace aspirin=0 if aspirin==.
-replace sglt2=0 if sglt2==.
-replace sglt2fu=0 if sglt2fu==.
-replace ARNI=0 if ARNI==.
-replace sglt2full=0 if sglt2full==.
-replace ARNIfull=0 if ARNIfull==.
-replace ARNIfu=0 if ARNIfu==.
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\glp1\diabetes_hfref_glp1_final_med_merged.dta", replace
-** 1455 patients on GLP1
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\glp1\diabetes_hf_glp1_final_med_merged.dta", replace
+** 1122 patients on GLP1
 
 
 

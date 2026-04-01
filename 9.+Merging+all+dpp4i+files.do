@@ -4,13 +4,13 @@
 ******************************************************************************************************************************************
 *** STEP 1: Merging all files 
 clear all
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\dpp4\diabetes_hfref_dpp4glp1_final_med_merged.dta"
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\dpp4\diabetes_hfref_dpp4glp1_final_comorbidities_merged.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\dpp4\diabetes_hf_dpp4glp1_final_med_merged.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\dpp4\diabetes_hf_dpp4glp1_final_comorbidities_merged.dta"
 drop _merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\dpp4\diabetes_hfref_dpp4glp1_final_lab_merged.dta"
-drop _merge 
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\dpp4\diabetes_hf_dpp4glp1_final_lab_merged.dta"
+drop _merge dpp4
 gen dpp4=1
-order scrssn 
+order scrssn dpp4
 
 
 
@@ -19,6 +19,7 @@ order scrssn
 replace ACE = 0 if ACE==.
 replace BB=0 if BB==.
 replace antiarr=0 if antiarr ==.
+replace GLP = 0 if GLP ==.
 replace insulin = 0 if insulin ==.
 replace LD= 0 if LD ==.
 replace metformin = 0 if metformin ==.
@@ -26,13 +27,6 @@ replace spiro =0 if spiro ==.
 replace statin=0 if statin ==.
 replace TZD = 0 if TZD==.
 replace SU = 0 if SU==.
-replace ARNI = 0 if ARNI ==.
-replace ARNIfull = 0 if ARNIfull ==.
-replace ARNIfu = 0 if ARNIfu ==.
-replace sglt2 = 0 if sglt2==.
-replace sglt2full = 0 if sglt2full ==.
-replace sglt2fu = 0 if sglt2fu ==.
-replace device = 0 if device ==.
 
 
 ******************************************************************************************************************************************
@@ -47,7 +41,6 @@ replace hypertension = 0 if hypertension ==.
 replace CAD = 0 if CAD ==.
 replace MI =0 if MI ==.
 replace ckd =0 if ckd ==.
-replace ckd2 =0 if ckd2 ==.
 replace cld =0 if cld ==.
 replace cancer =0 if cancer ==.
 replace pad =0 if pad ==.
@@ -55,17 +48,17 @@ replace polyabuse = 0 if polyabuse ==.
 replace ppm =0 if ppm ==.
 replace schizo =0 if schizo ==.
 replace stroke =0 if stroke ==.
-replace CRT = 0 if CRT==.
-replace ICD = 0 if ICD ==.
-replace device = 0 if device ==.
+replace pneumonia = 0 if pneumonia ==.
+replace copdexa = 0 if copdexa ==.
+replace cholecyst = 0 if cholecyst ==.
 
 ******************************************************************************************************************************************
-**** STEP 4: Merging with prior HFH files\dpp4\diabetes_hf_dpp4_final_comorbidities_merge
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\dpp4\diabetes_hfref_dpp4glp1_HFH_12_months.dta"
+**** STEP 4: Merging with prior HFH files\dpp4\diabetes_hf_dpp4_final_comorbidities_merged
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\dpp4\diabetes_hf_dpp4glp1_HFH_12_months.dta"
 drop _merge 
 replace HFH=0 if HFH==.
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\dpp4\diabetes_hfref_dpp4glp1_prior_HFH.dta", 
-drop _merge 
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\dpp4\diabetes_hf_dpp4glp1_prior_HFH.dta", 
+drop _merge patientsid
 replace THFH =0 if THFH==.
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hf\dpp4\diabetes_hfref_dpp4glp1_final_merged.dta", replace
-*** 2343 
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files\dpp4\diabetes_hf_dpp4glp1_final_merged.dta", replace
+***1027 patients 
