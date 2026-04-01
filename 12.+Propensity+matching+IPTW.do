@@ -1,14 +1,14 @@
 clear 
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\diabetes_hfief_final_glp1_dpp4.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFmrEF GLP1\Edited files\diabetes_hfmref_final_glp1_dpp4.dta"
 
 *** STEP 1: Multiple imputation of missing variables (BMI and creatinine)
 
 summ
-** BMI  missing values, creatinine   values, Hb  missing values, albumin  missing values 
+** BMI 31 missing values, creatinine 66 missing values, Hb 208 missing values, albumin 766 missing values 
 gen bmi2 = round(bmi,1)
 **rounding bmi values to nearest number 
 replace bmi2=. if bmi2>60
-*** 14 changes made
+*** 9 changes made
 drop bmi
 
 *** STEP 2 Splitting continous variables (age and BMI) into categorical variables for regression 
@@ -29,10 +29,10 @@ drop if bmi2 <30
 *** STEP 3: Propensity matching IPTW
 
 ** STEP 3A: Checking standardized difference prior to matching 
-pbalchk treatment age bmi2 sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr sglt2 insulin LD metformin spiro statin ARNI year
+pbalchk treatment age bmi2 sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr SGLT2 insulin LD metformin spiro statin ARNI year
 
-** STEP 3B: Calculating logistic regression, probability of treatment assignment for each patient (total observations; some missing values)
-logistic treatment age bmi2 sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr sglt2 insulin LD metformin spiro statin ARNI year
+** STEP 3B: Calculating logistic regression, probability of treatment assignment for each patient (total observations 2252/3040; some missing values)
+logistic treatment age bmi2 sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr SGLT2 insulin LD metformin spiro statin ARNI year
 
 
 ** Calculating p
@@ -46,22 +46,8 @@ replace weight =1/p if treatment==1
 replace weight =1/q if treatment==0
 
 ** STEP 3C: Checking balance post matching 
-pbalchk treatment age bmi2 sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr sglt2 insulin LD metformin spiro statin ARNI sglt2 year, wt(weight)
-** < 10% difference for all variables 
-
-** Graph the propensity scores 
-
-sysuse auto, clear
-psmatch2 foreign mpg, out(price)
-
-* Before
-
-twoway (kdensity _pscore if _treated==1) (kdensity _pscore if _treated==0 , lpattern (dash)), legend(label( 1 "GLP-1 RA") label(2 "DPP4i/SU")) xtitle("Propensity Scores BEFORE Matching") name(before, replace)
-
-*After
- twoway (kdensity _pscore if _treated==1 [aweight=_weight]) (kdensity _pscore if _treated==0 [aweight=_weight], lpattern (dash)), legend(label( 1 "GLP-1 RA") label(2 "DPP4i/SU")) xtitle("Propensity Scores AFTER Matching") name(after, replace)
- 
-grc1leg before after, ycommon
+pbalchk treatment age bmi2 sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr SGLT2 insulin LD metformin spiro statin ARNI year, wt(weight)
+** < 10% difference for all variables except COPD and schizo
 
 graph tw kdensity p if treatment ==0||kdensity p if treatment ==1
 graph tw kdensity p if treatment ==0||kdensity p if treatment==1 [w=weight]
@@ -78,22 +64,11 @@ gen weight2=.
 replace weight2=1/p2 if treatment ==1
 replace weight2=1/q2 if treatment ==0
 
-pbalchk treatment age bmi2 sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr sglt2 insulin LD metformin spiro statin ARNI sglt2 year, wt(weight2)
+pbalchk treatment age bmi2 sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr SGLT2 insulin LD metformin spiro statin ARNI year, wt(weight2)
 ** No residual imbalance after excluding extreme weights 
 
-** Graph the propensity scores 
+graph tw kdensity p if treatment ==0||kdensity p if treatment==1 [w=weight2]
 
-sysuse auto, clear
-psmatch2 foreign mpg, out(price)
-
-* Before
-
-twoway (kdensity _pscore if _treated==1) (kdensity _pscore if _treated==0 , lpattern (dash)), legend(label( 1 "GLP-1 RA") label(2 "DPP4i/SU")) xtitle("Propensity Scores BEFORE Matching") name(before, replace)
-
-*After
- twoway (kdensity _pscore if _treated==1 [aweight=_weight]) (kdensity _pscore if _treated==0 [aweight=_weight], lpattern (dash)), legend(label( 1 "GLP-1 RA") label(2 "DPP4i/SU")) xtitle("Propensity Scores AFTER Matching") name(after, replace)
- 
-grc1leg before after, ycommon
 
 
 **** Final balance diagnositics 
@@ -102,40 +77,44 @@ grc1leg before after, ycommon
 
 
 
+
                Mean in treated   Mean in Untreated   Standardised diff.
 ----------------------------------------------------------------------
-         age |           68.97              68.57                0.048
-        bmi2 |           38.56              37.08                0.251
-         sex |            1.03               1.02                0.032
-          AF |            0.51               0.57               -0.121
-        copd |            0.48               0.51               -0.058
-  depression |            0.45               0.36                0.187
-     alcohol |            0.02               0.05               -0.202
-hypothyroi~m |            0.16               0.14                0.064
-hypertension |            0.68               0.74               -0.123
-         CAD |            0.82               0.72                0.246
-          MI |            0.33               0.24                0.216
-         ckd |            0.64               0.47                0.334
-         cld |            0.12               0.12                0.002
-      cancer |            0.00               0.01               -0.030
-         pad |            0.20               0.18                0.051
-   polyabuse |            0.07               0.11               -0.164
-         ppm |            0.18               0.17                0.041
-      schizo |            0.02               0.02               -0.010
-      stroke |            0.03               0.03                0.002
-         HFH |            0.06               0.09               -0.121
-        THFH |            0.07               0.12               -0.126
-         ACE |            0.55               0.48                0.140
-          BB |            0.68               0.60                0.164
-     antiarr |            0.07               0.10               -0.116
-       sglt2 |            0.08               0.02                0.258
-     insulin |            0.60               0.10                1.218
-          LD |            0.86               0.81                0.157
-   metformin |            0.19               0.24               -0.119
-       spiro |            0.22               0.20                0.058
-      statin |            0.86               0.76                0.269
-        ARNI |            0.02               0.01                0.086
-        year |         2019.20            2018.12                0.606
+         age |           69.76              68.00                0.215
+        bmi2 |           38.41              36.83                0.270
+         sex |            1.02               1.03               -0.015
+          AF |            0.51               0.52               -0.025
+        copd |            0.46               0.51               -0.093
+  depression |            0.44               0.33                0.219
+     alcohol |            0.01               0.05               -0.213
+hypothyroi~m |            0.17               0.13                0.113
+hypertension |            0.62               0.65               -0.048
+         CAD |            0.79               0.71                0.191
+          MI |            0.31               0.24                0.153
+         ckd |            0.75               0.58                0.377
+         cld |            0.14               0.11                0.084
+      cancer |            0.01               0.01                0.012
+         pad |            0.19               0.17                0.054
+   polyabuse |            0.06               0.10               -0.138
+         ppm |            0.16               0.17               -0.016
+      schizo |            0.02               0.02                0.003
+      stroke |            0.06               0.05                0.062
+         HFH |            0.07               0.07                0.015
+        THFH |            0.09               0.08                0.044
+      ACEARB |            0.54               0.53                0.022
+          BB |            0.68               0.63                0.113
+     antiarr |            0.07               0.09               -0.076
+       SGLT2 |            0.11               0.02                0.349
+     insulin |            0.61               0.12                1.198
+          LD |            0.87               0.81                0.173
+   metformin |            0.19               0.23               -0.087
+       spiro |            0.21               0.20                0.041
+      statin |            0.87               0.77                0.264
+        ARNI |            0.03               0.02                0.066
+        year |         2019.63            2018.11                0.782
+----------------------------------------------------------------------
+
+
 
 
 
@@ -145,38 +124,38 @@ hypertension |            0.68               0.74               -0.123
 
                Mean in treated   Mean in Untreated   Standardised diff.
 ----------------------------------------------------------------------
-         age |           68.63              68.42                0.025
-        bmi2 |           38.14              37.92                0.039
-         sex |            1.03               1.03               -0.024
-          AF |            0.51               0.47                0.079
-        copd |            0.49               0.53               -0.076
-  depression |            0.40               0.43               -0.049
-     alcohol |            0.03               0.03               -0.010
-hypothyroi~m |            0.14               0.18               -0.112
-hypertension |            0.73               0.75               -0.038
-         CAD |            0.77               0.77                0.016
-          MI |            0.29               0.31               -0.062
-         ckd |            0.56               0.60               -0.086
-         cld |            0.11               0.14               -0.088
-      cancer |            0.00               0.00               -0.002
-         pad |            0.19               0.18                0.040
-   polyabuse |            0.08               0.08                0.010
-         ppm |            0.16               0.14                0.047
-      schizo |            0.02               0.04               -0.137
-      stroke |            0.03               0.09               -0.297
-         HFH |            0.08               0.06                0.053
-        THFH |            0.09               0.08                0.025
-         ACE |            0.51               0.53               -0.045
-          BB |            0.63               0.61                0.044
-     antiarr |            0.08               0.06                0.064
-       sglt2 |            0.06               0.04                0.092
-     insulin |            0.39               0.39               -0.015
-          LD |            0.81               0.82               -0.022
-   metformin |            0.20               0.18                0.057
-       spiro |            0.20               0.22               -0.055
-      statin |            0.81               0.81               -0.004
-        ARNI |            0.02               0.01                0.057
-        year |         2018.80            2018.79                0.001
+         age |           68.60              68.93               -0.040
+        bmi2 |           37.63              37.18                0.077
+         sex |            1.02               1.02                0.017
+          AF |            0.52               0.48                0.063
+        copd |            0.46               0.53               -0.122
+  depression |            0.37               0.40               -0.061
+     alcohol |            0.04               0.03                0.032
+hypothyroi~m |            0.16               0.18               -0.074
+hypertension |            0.67               0.63                0.089
+         CAD |            0.75               0.77               -0.030
+          MI |            0.26               0.29               -0.082
+         ckd |            0.66               0.66               -0.003
+         cld |            0.11               0.12               -0.032
+      cancer |            0.00               0.01               -0.006
+         pad |            0.17               0.19               -0.052
+   polyabuse |            0.08               0.08                0.016
+         ppm |            0.16               0.15                0.041
+      schizo |            0.02               0.04               -0.136
+      stroke |            0.05               0.08               -0.109
+         HFH |            0.06               0.06                0.000
+        THFH |            0.07               0.07                0.007
+      ACEARB |            0.51               0.56               -0.096
+          BB |            0.63               0.64               -0.037
+     antiarr |            0.09               0.07                0.088
+       SGLT2 |            0.06               0.08               -0.080
+     insulin |            0.34               0.37               -0.074
+          LD |            0.79               0.82               -0.078
+   metformin |            0.19               0.21               -0.054
+       spiro |            0.20               0.21               -0.032
+      statin |            0.81               0.81               -0.009
+        ARNI |            0.02               0.02                0.048
+        year |         2018.94            2018.99               -0.024
 ----------------------------------------------------------------------
 
 
@@ -187,38 +166,38 @@ hypertension |            0.73               0.75               -0.038
 
                Mean in treated   Mean in Untreated   Standardised diff.
 ----------------------------------------------------------------------
-         age |           68.62              68.78               -0.020
-        bmi2 |           37.82              37.75                0.010
-         sex |            1.02               1.02               -0.001
-          AF |            0.52               0.53               -0.010
-        copd |            0.51               0.52               -0.010
-  depression |            0.39               0.41               -0.047
-     alcohol |            0.03               0.03               -0.007
-hypothyroi~m |            0.15               0.17               -0.053
-hypertension |            0.74               0.73                0.018
-         CAD |            0.75               0.76               -0.016
-          MI |            0.27               0.29               -0.054
-         ckd |            0.54               0.54                0.005
-         cld |            0.12               0.12                0.002
-      cancer |            0.00               0.00                0.004
-         pad |            0.19               0.20               -0.007
-   polyabuse |            0.09               0.10               -0.020
-         ppm |            0.16               0.18               -0.036
-      schizo |            0.02               0.01                0.083
-      stroke |            0.03               0.03                0.008
-         HFH |            0.06               0.06               -0.001
-        THFH |            0.08               0.08                0.003
-         ACE |            0.49               0.49               -0.005
-          BB |            0.64               0.63                0.007
-     antiarr |            0.06               0.07               -0.027
-       sglt2 |            0.04               0.04               -0.022
-     insulin |            0.23               0.21                0.036
-          LD |            0.80               0.81               -0.032
-   metformin |            0.21               0.23               -0.038
-       spiro |            0.20               0.20               -0.002
-      statin |            0.81               0.82               -0.031
-        ARNI |            0.02               0.02               -0.006
-        year |         2018.73            2018.73               -0.000
+         age |           69.07              69.02                0.006
+        bmi2 |           37.51              37.63               -0.020
+         sex |            1.01               1.03               -0.078
+          AF |            0.52               0.51                0.015
+        copd |            0.50               0.47                0.054
+  depression |            0.39               0.39                0.009
+     alcohol |            0.01               0.02               -0.074
+hypothyroi~m |            0.16               0.16                0.006
+hypertension |            0.64               0.66               -0.039
+         CAD |            0.77               0.76                0.020
+          MI |            0.29               0.28                0.014
+         ckd |            0.71               0.69                0.039
+         cld |            0.12               0.12               -0.007
+      cancer |            0.01               0.01               -0.022
+         pad |            0.18               0.18                0.011
+   polyabuse |            0.07               0.08               -0.031
+         ppm |            0.17               0.17                0.003
+      schizo |            0.02               0.02                0.029
+      stroke |            0.06               0.05                0.073
+         HFH |            0.05               0.05                0.014
+        THFH |            0.06               0.06                0.005
+      ACEARB |            0.52               0.52               -0.001
+          BB |            0.64               0.66               -0.041
+     antiarr |            0.07               0.07               -0.008
+       SGLT2 |            0.05               0.04                0.043
+     insulin |            0.33               0.31                0.047
+          LD |            0.83               0.82                0.027
+   metformin |            0.21               0.20                0.010
+       spiro |            0.19               0.19               -0.006
+      statin |            0.84               0.82                0.075
+        ARNI |            0.02               0.02                0.001
+        year |         2019.15            2019.17               -0.011
 ----------------------------------------------------------------------
 
 

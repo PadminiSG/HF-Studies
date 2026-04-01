@@ -1,49 +1,41 @@
-**** STEP 1: Merging dod files of GLP1 and DPP4
+**** STEP 1:  Merging final GLP1 and DPP4 combined files to heart failure hospitalization file 
 clear all
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\dpp4\diabetes_hfief_dpp4glp1_dod.dta"
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\glp1\diabetes_hfief_glp1_dod.dta"
-drop if _merge ==3
-drop _merge
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\diabetes_hfief_dpp4_glp1_dod_final.dta", replace
-
-**** STEP 2:  Merging final GLP1 and DPP4 combined files to heart failure hospitalization file 
-clear all
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\diabetes_hfief_final_glp1_dpp4.dta"
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFmrEF GLP1\Edited files\diabetes_hfmref_final_glp1_dpp4.dta"
 gen year= year(dof)
-drop if bmi < 30
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\diabetes_hfief_dpp4glp1_glp1_hf_admission.dta"
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFmrEF GLP1\Edited files\diabetes_hf_dpp4glp1_glp1_hfh.dta"
 drop if _merge==2
 drop _merge
 
 *******************************************************************************************************************************************
 
-**** STEP 3
+**** STEP 2
 *** Splitting continous variables (age and BMI) into categorical variables for regression 
 gen bmi2 = round(bmi,1)
 **rounding bmi values to nearest number 
-replace bmi2=. if bmi2>60
+replace bmi2=. if bmi2>70
+drop if bmi2<30 | bmi==.
 *** 24 changes made
 drop bmi
 
-
 ** Splitting age into clinically relevant groups
 gen agegp=age
-recode agegp (18/35=1) (36/45=2) (46/55=3) (56/65=4) (66/75=5) (76/85=6) (86/100=7)
+recode agegp (18/49=1) (50/60=2) (61/70=3) (71/80=4) ( 80/100=5)
 tab agegp
 
 ** Splitting BMI into clinically relevant groups
 gen obesity = bmi2
-recode obesity (0/18.4=1) (18.5/24.9=2) (25.0/29.9=3) (30/34.9=4) (35.0/39.9=5) (40/60=6)
+recode obesity (30/34.9=1) (35.0/39.9=2) (40/max=3)
 
 
 *******************************************************************************************************************************************
-**** STEP 4: IPTW
+**** STEP 3: IPTW
 
-** STEP 4A: Checking standardized difference prior to matching 
-pbalchk treatment age bmi2 sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr insulin LD metformin spiro statin ARNI year
+** STEP 3A: Checking standardized difference prior to matching 
+pbalchk treatment age bmi2 sex hypertension CAD stroke MI pad AF ckd copd cld hypothyroidism depression alcohol polyabuse cancer BB ACEARB ARNI spiro LD antiarr insulin metformin SGLT2 hct creatinine hba1c year
 
-** STEP 4B: Calculating logistic regression, probability of treatment assignment for each patient (total observations ; some missing values)
-logistic treatment age bmi2 sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr insulin LD metformin spiro statin ARNI year
+
+** STEP 3B: Calculating logistic regression, probability of treatment assignment for each patient (total observations 2998/3040; some missing values)
+logistic treatment age bmi2 sex hypertension CAD stroke MI pad AF ckd copd cld hypothyroidism depression alcohol polyabuse cancer BB ACEARB ARNI spiro LD antiarr insulin metformin SGLT2 hct creatinine hba1c year
 
 
 ** Calculating p
@@ -56,9 +48,9 @@ gen weight=.
 replace weight =1/p if treatment==1
 replace weight =1/q if treatment==0
 
-** STEP 4C: Checking balance post matching 
-pbalchk treatment age bmi2 sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr sglt2 insulin LD metformin spiro statin ARNI sglt2 year, wt(weight)
-** < 10% difference for all variables 
+** STEP 3C: Checking balance post matching 
+pbalchk treatment age bmi2 sex hypertension CAD stroke MI pad AF ckd copd cld hypothyroidism depression alcohol polyabuse cancer BB ACEARB ARNI spiro LD antiarr insulin metformin SGLT2 hct creatinine hba1c year, wt(weight)
+** < 10% difference for all variables except hypertension (0.107), schizo (-0.101), stroke (-0.116), LD (-0.133), SGLT2 (0.113)
 
 graph tw kdensity p if treatment ==0||kdensity p if treatment ==1
 graph tw kdensity p if treatment ==0||kdensity p if treatment==1 [w=weight]
@@ -66,81 +58,78 @@ sum weight,de
 sum p if treatment ==1,de
 sum p if treatment ==0, de
 
-** STEP 4D: Residual imbalance post matching; removing extreme weights
-gen p2=p if p>0.1 & p<0.9
-gen q2=q if q>0.1 & q <0.9
+** STEP 3D: Residual imbalance post matching; removing extreme weights
+gen p2=p if p>0.05 & p<0.95
+gen q2=q if q>0.05 & q<0.95
 
 gen weight2=.
 
 replace weight2=1/p2 if treatment ==1
 replace weight2=1/q2 if treatment ==0
 
-pbalchk treatment age bmi2 sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr sglt2 insulin LD metformin spiro statin ARNI sglt2 year, wt(weight2)
-** No residual imbalance after excluding extreme weights 
+pbalchk treatment age bmi2 sex hypertension CAD stroke MI pad AF ckd copd cld hypothyroidism depression alcohol polyabuse cancer BB ACEARB ARNI spiro LD antiarr insulin metformin SGLT2 hct creatinine hba1c year, wt(weight2)
+** No residual imbalance after excluding extreme weights (except SGLT2 - 0.118; but seems to be an error in data presentation?)
 
 graph tw kdensity p if treatment ==0||kdensity p if treatment==1 [w=weight2]
 
 *******************************************************************************************************************************************
 
-*** STEP 5: gen outcome date variable (composite of HFH or mortality; whichever comes first)
+*** STEP 4: gen outcome date variable (composite of HFH or mortality; whichever comes first)
 gen follow_up =.
-replace follow_up= mdy(07,30,2025)
+replace follow_up= mdy(12,31,2023)
 
 ** final date of follow up Decem 30, 2023
-gen outcome = min(admission, dod, follow_up)
-gen failure =0 if admission==. & dod==.
+gen outcome = min(discharge, dod, follow_up)
+gen failure =0 if discharge>follow_up & dod>follow_up
 replace failure = 1 if failure ==.
 
 *******************************************************************************************************************************************
-*** STEP 6: Merging with file with entire age and dof information 
-merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\final_age_dof.dta"
+*** STEP 5: Merging with file with entire age and dof information 
+merge 1:1 scrssn using "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFmrEF GLP1\Edited files\final_age_dof.dta"
 keep if _merge ==3
 drop _merge
-save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\final_survival_analysis_data.dta", replace
+save "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFmrEF GLP1\Edited files\final_survival_analysis_data.dta", replace
 
 ************************************************************************************************************************************************************************************************************************************************************
 *** STEP 7: Survival analyses 
 clear all
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\final_survival_analysis_data.dta",
-stset outcome, id(scrssn) origin(dof) failure(failure==1) exit(failure ==1 time td(30July2025)) scale(365.25)
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFmrEF GLP1\Edited files\final_survival_analysis_data.dta"
+stset outcome, id(scrssn) origin(dof) failure(failure==1) exit(failure ==1 time follow_up) scale(365.25)
 
-stcox treatment agegp obesity sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr sglt2 insulin LD metformin spiro statin  year weight2
+stcox treatment agegp obesity sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr SGLT2 insulin LD metformin spiro statin ARNI year weight2
 
-stcox treatment agegp obesity sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr sglt2 insulin LD metformin spiro statin year 
+stcox treatment agegp obesity sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr SGLT2 insulin LD metformin spiro statin ARNI year
 
 stcox treatment weight2 
 
-sts graph, by(treatment) 
+sts graph, by(treatment)
 
-sts graph, by(treatment) adjustfor(bmi agegp sex AF ckd cld copd HFH THFH CAD MI ACE BB antiarr insulin LD metformin spiro HFH THFH)
+*** Median follow up 2.6 years 
 
-*Mortality rates:
+*generating outcome components as binary variables
 gen death=0 if dod==.
 recode death .=1
-gen outcome3=min(dod, follow_up)
-stset outcome3, id(scrssn) origin(dof) failure(death==1) exit(death==1 time td(30July2025)) scale(365.25)
-strate, per(100)
-strate treatment, per(100)
+gen HFHafter=0 if discharge==.
+recode HFHafter .=1
 
 
-**** STEP 8: Competing risk analyses
+*** STEP 8 Competing risk analyses
+
 clear all
-use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\GLP1 new files hfief\final_survival_analysis_data.dta",
-drop follow_up2 outcome
+use "P:\ORD_Sundaram_202108013D\Padmini\Diabetes Stata Files\HFmrEF GLP1\Edited files\final_survival_analysis_data.dta"
 gen follow_up2 =.
-*replace follow_up2= mdy(07,31,2025)
-replace follow_up2=mdy(01,01,2023)
-replace admission=. if admission>=follow_up2
+replace follow_up2= mdy(12,31,2023)
+replace discharge=. if discharge>=follow_up2
 replace dod=. if dod>=follow_up2
 gen event = 0 if follow_up2~=.
 replace event = 2 if dod ~=.
-replace event = 1 if admission ~=. 
-gen outcome = min(admission, dod,follow_up2)
+replace event = 1 if discharge ~=. 
+replace outcome = min(discharge,dod, follow_up2)
 gen time = outcome-dof
 stset outcome, id(scrssn) origin(dof) failure(event==1) scale(365.25)
-stcrreg treatment agegp obesity sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr sglt2 insulin LD metformin spiro statin year,compete(event==2)
-* Subdistribution HR 1.09 p =0.372 95% 0.89-1.34 Number of HFH 617
-*for f/u of 1/1/2023: SHR 1.11, p = 0.37, 95% CI (0.88-1.40), Number of HFH = 464
+stcrreg treatment agegp obesity sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr SGLT2 insulin LD metformin spiro statin ARNI year, compete(event==2)
+stcurve, cif at(treatment=(0 1) age obesity sex AF copd depression alcohol hypothyroidism hypertension CAD MI ckd cld cancer pad polyabuse ppm schizo stroke HFH THFH ACE BB antiarr SGLT2 insulin LD metformin spiro statin ARNI year) range (0 3)
+
 
 
 
